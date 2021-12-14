@@ -36,25 +36,35 @@ function App() {
       buttonLabel: 'Loading...'
     })
 
-    const query = {
-      first_name: user.firstName,
-      last_name: user.lastName,
-      email: user.email
-    }
+    const apiUrl = 'http://localhost:4000/api/user'
 
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({query})
+      body: JSON.stringify({
+        first_name: user.firstName,
+        last_name: user.lastName,
+        email: user.email
+      })
     }
 
-    fetch('https://reqres.in/api/posts', requestOptions) // fetch('https://localhost:4000/api/user', requestOptions)
+    fetch(apiUrl, requestOptions)
       .then(res => {
-        setUser({
-          ...user,
-          buttonColor: '#3CB371',
-          buttonLabel: 'Success'
-        })
+        if (res.status === 200) {
+          setUser({
+            ...user,
+            buttonColor: '#3CB371',
+            buttonLabel: 'OK'
+          })
+        }
+
+        if (res.status >= 400) {
+          setUser({
+            ...user,
+            buttonColor: '#FA8072',
+            buttonLabel: 'Error'
+          })
+        }
         return res
       })
       .catch(err => {
